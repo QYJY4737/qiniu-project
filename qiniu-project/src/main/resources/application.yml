@@ -3,6 +3,11 @@ server:
 spring:
   application:
     name: qiniu-project
+  #配置图片大小限制
+  servlet:
+    multipart:
+      max-file-size: "1000MB"
+      max-request-size: "10000MB"
 # 七牛云配置
 qiniu:
   access-key: XBXenHfURaBC2GKPsB724AuR8W36vE27FOa6VRbg
