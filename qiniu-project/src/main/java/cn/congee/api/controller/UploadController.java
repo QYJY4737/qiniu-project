@@ -2,45 +2,46 @@ package cn.congee.api.controller;
 
 
 import cn.congee.api.common.BaseResult;
-import cn.congee.api.util.UploadUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cn.congee.api.service.QiNiuService;
+import cn.congee.api.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 /**
  * @Author: yang
  * @Date: 2020-12-02 18:19
  */
+@Slf4j
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
 
-    private final static Logger log = LoggerFactory.getLogger(UploadController.class);
+    @Autowired
+    private QiNiuService qiNiuService;
 
-    @PostMapping("/qiniu")
-    public BaseResult<HashMap<String, Object>> uploadFile(@RequestBody MultipartFile file){
-        String filename = file.getOriginalFilename();
-        System.out.println("filename: " + filename);
-        String localFilePath = "/home/swifthealth/图片/" + filename;
-        System.out.println("localFilePath: " + localFilePath);
-        HashMap<String, Object> map = UploadUtils.uploadFile(localFilePath);
-        System.out.println("map: " + map.toString());
-        BaseResult<HashMap<String, Object>> result = new BaseResult<>();
-        if(CollectionUtils.isEmpty(map)){
-            log.error("上传文件地址有误! ");
-            result.setMsg("上传失败");
-            result.setCode(-1);
+    @PostMapping("/uploadByFile")
+    public BaseResult<HashMap<String, Object>> uploadByFile(@RequestBody MultipartFile file){
+        return new BaseResult<>(qiNiuService.uploadByFile(file));
+    }
+
+    @PostMapping("/uploadByStream")
+    public BaseResult<HashMap<String, Object>> uploadByStream(@RequestBody MultipartFile file){
+        try {
+            return new BaseResult<>(this.qiNiuService.uploadByStream(new FileInputStream(FileUtils.multipartFileToFile(file))));
+        }catch (FileNotFoundException fe){
+            fe.printStackTrace();
         }
-        result.setData(map);
-        result.setCode(200);
-        result.setMsg("上传成功");
-        return result;
+        return null;
+    }
+
+    @DeleteMapping("/deleteByKey/{key}")
+    public BaseResult deleteByKey(@PathVariable("key")String key){
+        return new BaseResult(qiNiuService.deleteByKey(key));
     }
 
 }

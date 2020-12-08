@@ -14,7 +14,8 @@ qiniu:
   secret-key: 9OkOoWs3Q2DPmoyphWZNGHQSJdwvMdgXV0j8BZ62
   bucket: yovb
   zone: zone0
-  domain-of-bucket: qkamygyw0.hd-bkt.clouddn.com
+  #domain-of-bucket: qkamygyw0.hd-bkt.clouddn.com
+  prefix: qkamygyw0.hd-bkt.clouddn.com
   expire-in-seconds: -1
   # [{'zone0':'华东'}, {'zone1':'华北'},{'zone2':'华南'},{'zoneNa0':'北美'},{'zoneAs0':''}]
   # 链接过期时间，单位是秒，3600代表1小时，-1代表永不过期
